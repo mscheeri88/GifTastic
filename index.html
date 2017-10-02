@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>Favorite animals</title>
+  <style type="text/css">
+    button,
+    div,
+    form,
+    input {
+      margin: 10px;
+   
+   
+    }
+    .inline { float:left; };
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+    <h1>Animal Search</h1>
+ 
+
+    <!-- Rendered Buttons will get Dumped Here  -->
+    <div id="buttons-view"></div>
+
+    <form id="animal-form">
+      <label for="animal-input">Add a Animal</label>
+      <input type="text" id="animal-input"><br>
+
+      <!-- Button triggers new movie to be added -->
+      <input id="add-animal" type="submit" value="Add a Animal">
+    </form>
+    <div id="animal-div"></div>
+
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script type="text/javascript">
+      // Initial array of animals
+      var animals = ["cats","pigs",];
+
+      // displayMovieInfo function re-renders the HTML to display the appropriate content
+      function displayAnimalInfo() {
+
+        var animal = $(this).attr("data-name");
+        var queryURL = "https://api.giphy.com/v1/gifs/search?q="+ animal +"&api_key=dc6zaTOxFJmzC&taglimit=10";
+        
+
+        // Creating an AJAX call for the specific movie button being clicked
+        $.ajax({
+          url: queryURL,
+          method: "GET"
+        }).done(function(response) {
+            console.log(response);
+          // Creating a div to hold the animal info
+          var animalDiv = $("<div class='animal inline'>");
+          
+          for (var i = 0; i < 10; i++) {
+
+          	var rating = response.data[i].rating; // Creating an element to have the rating displayed
+          	var pOne = $("<p>").text("Rating: " + rating); // Displaying the rating
+          	animalDiv.append(pOne);
+
+
+          	// Retrieving the URL for the image
+          	var imgURL = response.data[i].images.original_still.url;
+            var gifURL = response.data[i].images.original.url;
+          	var animalImage = $("<img height='150' width='200'>").attr('src', imgURL); //set source attribute to imageUr
+            animalImage.attr("still", imgURL);
+            animalImage.attr("active", gifURL);
+            animalImage.addClass("gif");
+            animalImage.attr('src',imgURL);
+            
+            animalDiv.append(animalImage);
+
+          }
+                   // append the entire Div above into the animal div in our html
+          $("#animal-div").append(animalDiv);
+
+          $(".gif").on("click", function() {
+            
+            var state = $(this).attr("gif");
+
+            if (state === "still") {
+              $(this).attr("src", $(this).attr("active"));
+              $(this).attr("gif", "active");
+            } else {
+              $(this).attr("src", $(this).attr("still"));
+              $(this).attr("gif", "still");
+            }
+          });
+        });
+
+
+
+      }
+
+      // Function for displaying movie data
+      function renderButtons() {
+
+        // Deleting the movies prior to adding new movies
+        // (this is necessary otherwise you will have repeat buttons)
+        $("#buttons-view").empty();
+
+        // Looping through the array of animals
+        for (var i = 0; i < animals.length; i++) {
+
+          // Then dynamicaly generating buttons for each movie in the array
+          // This code $("<button>") is all jQuery needs to create the beginning and end tag. (<button></button>)
+          var a = $("<button>");
+          // Adding a class of movie to our button
+          a.addClass("animalclass");
+          // Adding a data-attribute
+          a.attr("data-name", animals[i]);
+          // Providing the initial button text
+          a.text(animals[i]);
+          // Adding the button to the buttons-view div
+          $("#buttons-view").append(a);
+        }
+      }
+
+      // This function handles events where a add animal button clicked
+      $("#add-animal").on("click", function(event) {
+        event.preventDefault();
+        // This line grabs the input from the textbox
+        var animal = $("#animal-input").val().trim();
+
+        // Adding movie from the textbox to our array
+        animals.push(animal);
+
+        // Calling renderButtons which handles the processing of our movie array
+        renderButtons();
+      });
+
+      // Adding a click event listener to all elements with a class of "animalclass"
+      $(document).on("click", ".animalclass", displayAnimalInfo);
+
+      // Calling the renderButtons function to display the intial buttons
+      renderButtons();
+    </script>
+  </div>
+</body>
+
+</html>

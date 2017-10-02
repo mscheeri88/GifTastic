@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <style> 
+    /* adding style within a html file */
+    #content p{
+        color: green;
+    }
+    </style>
+</head>
+<body>
+    <h1>simple input</h1>
+    <input type="text" id="simple">
+    <button id="paste">Past onto Page</button>
+    <div id="content"></div>
+    <script>
+    
+    $(document).ready(function(){; //if everything ready, fires ready event function  
+        $("#paste").on("click", function(){ //callback function
+        console.log("clicked on paste button");
+            var simpleValue = $("#simple").val();  //if I put somethign in there I would set the value of the val, not awanted.  Also made it a variable
+                console.log(simpleValue);    
+                $("#content").append("<p>" + simpleValue + "</p>");
+        });
+    });
+    </script> 
+</body>
+</html>
