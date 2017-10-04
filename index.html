@@ -4,6 +4,7 @@
 <head>
   <meta charset="utf-8">
   <title>Favorite animals</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
   <style type="text/css">
     button,
     div,
@@ -13,7 +14,8 @@
    
    
     }
-    .inline { float:left; };
+    .inline { float: left; };
+
   </style>
 </head>
 
@@ -40,14 +42,14 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script type="text/javascript">
       // Initial array of animals
-      var animals = ["cats","pigs",];
-
+      var animals = ["cats","pigs", "turkey", "dog", "mokey"];
+    
       // displayMovieInfo function re-renders the HTML to display the appropriate content
       function displayAnimalInfo() {
 
         var animal = $(this).attr("data-name");
-        var queryURL = "https://api.giphy.com/v1/gifs/search?q="+ animal +"&api_key=dc6zaTOxFJmzC&taglimit=10";
-        
+        var queryURL = "https://api.giphy.com/v1/gifs/search?q="+ animal +"&api_key=dc6zaTOxFJmzC&limit=10";
+       
 
         // Creating an AJAX call for the specific movie button being clicked
         $.ajax({
@@ -57,14 +59,18 @@
             console.log(response);
           // Creating a div to hold the animal info
           var animalDiv = $("<div class='animal inline'>");
-          
-          for (var i = 0; i < 10; i++) {
+          var animalRateDiv = $("<div>");
+            
+          for (var i = 0; i < response.data.length; i++) {
 
+            clear();
           	var rating = response.data[i].rating; // Creating an element to have the rating displayed
           	var pOne = $("<p>").text("Rating: " + rating); // Displaying the rating
-          	animalDiv.append(pOne);
+          	pOne.addClass("bg-primary");
+            animalDiv.append(pOne);
 
 
+              
           	// Retrieving the URL for the image
           	var imgURL = response.data[i].images.original_still.url;
             var gifURL = response.data[i].images.original.url;
@@ -76,9 +82,14 @@
             
             animalDiv.append(animalImage);
 
+              
+            
+
           }
                    // append the entire Div above into the animal div in our html
           $("#animal-div").append(animalDiv);
+          //$("#animalRateDiv").append(animalDiv);
+          //$("#animal-div").append(animalRateDiv);
 
           $(".gif").on("click", function() {
             
@@ -97,7 +108,14 @@
 
 
       }
+      function clear(){
 
+        $("#animal-div").empty()
+      }
+      function clearer(){
+
+        $("#data-name").empty()
+      }
       // Function for displaying movie data
       function renderButtons() {
 
@@ -113,6 +131,7 @@
           var a = $("<button>");
           // Adding a class of movie to our button
           a.addClass("animalclass");
+          a.addClass("btn btn-success btn-lg");
           // Adding a data-attribute
           a.attr("data-name", animals[i]);
           // Providing the initial button text
@@ -125,14 +144,18 @@
       // This function handles events where a add animal button clicked
       $("#add-animal").on("click", function(event) {
         event.preventDefault();
+
         // This line grabs the input from the textbox
         var animal = $("#animal-input").val().trim();
 
         // Adding movie from the textbox to our array
         animals.push(animal);
-
+        $("#animal-input").val("");
+        clearer();
         // Calling renderButtons which handles the processing of our movie array
+        
         renderButtons();
+    
       });
 
       // Adding a click event listener to all elements with a class of "animalclass"
@@ -140,6 +163,7 @@
 
       // Calling the renderButtons function to display the intial buttons
       renderButtons();
+
     </script>
   </div>
 </body>
